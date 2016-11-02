@@ -1,5 +1,7 @@
 #include "fpr/trajectorizer.hpp"
 
+#include <algorithm>
+
 namespace fpr
 {
     Trajectorizer::Trajectorizer(const Config *config)
@@ -86,8 +88,9 @@ namespace fpr
                     }
                 }
 
-                values[y] = isMax ? v : 0;
+                values[y] = isMax * v;
             }
+
         }
     }
 

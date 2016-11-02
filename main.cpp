@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
     config._signalBucketSize = config._signalFrequency/1000;//fps=1000
 
 
-    std::size_t trajectorizerSmoothFilterWidth = 15;
+    std::size_t trajectorizerSmoothFilterWidth = 11;
     std::size_t trajectorizerSmoothFilterHeight = 3;
-    config._trajectorizerFindMaxHeight = 11;
+    config._trajectorizerFindMaxHeight = 5;
 
     config._trajectorizerSmoothFilter.resize(trajectorizerSmoothFilterWidth);
     for(std::size_t x(0); x<trajectorizerSmoothFilterWidth; ++x)
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
 
     {
-        std::size_t steps = 200;
+        std::size_t steps = 400;
         config._frequencyGrid.resize(steps);
         config._ppwGrid.resize(steps);
         real min = /*fpr::log*/(100.0);
