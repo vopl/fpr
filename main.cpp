@@ -1,6 +1,7 @@
 #include <iostream>
 #include "fpr/wavStore.hpp"
 #include "fpr/cqt.hpp"
+#include "fpr/trajectorizer.hpp"
 
 using namespace fpr;
 
@@ -25,8 +26,31 @@ int main(int argc, char *argv[])
     config._signalBucketSize = config._signalFrequency/1000;//fps=1000
 
 
+    std::size_t trajectorizerSmoothFilterWidth = 15;
+    std::size_t trajectorizerSmoothFilterHeight = 3;
+    config._trajectorizerFindMaxHeight = 11;
+
+    config._trajectorizerSmoothFilter.resize(trajectorizerSmoothFilterWidth);
+    for(std::size_t x(0); x<trajectorizerSmoothFilterWidth; ++x)
     {
-        std::size_t steps = 100;
+        real hsigma = real(trajectorizerSmoothFilterWidth)/4;
+        real hmu = trajectorizerSmoothFilterWidth/2;
+        real hv = fpr::exp(-(x-hmu)*(x-hmu)/2/hsigma/hsigma) / hsigma / fpr::sqrt(g_2pi);
+
+        config._trajectorizerSmoothFilter[x].resize(trajectorizerSmoothFilterHeight);
+        for(std::size_t y(0); y<trajectorizerSmoothFilterHeight; ++y)
+        {
+            real vsigma = real(trajectorizerSmoothFilterHeight)/4;
+            real vmu = trajectorizerSmoothFilterHeight/2;
+            real vv = fpr::exp(-(y-vmu)*(y-vmu)/2/vsigma/vsigma) / vsigma / fpr::sqrt(g_2pi);
+
+            config._trajectorizerSmoothFilter[x][y] = hv*vv;
+        }
+    }
+
+
+    {
+        std::size_t steps = 200;
         config._frequencyGrid.resize(steps);
         config._ppwGrid.resize(steps);
         real min = /*fpr::log*/(100.0);
@@ -38,7 +62,7 @@ int main(int argc, char *argv[])
             config._frequencyGrid[k] = /*fpr::exp*/(min + k*step);
 
             real x01 = real(k)/(steps-1);
-            config._ppwGrid[k] = 5 * (1.0-x01) + 50*(x01);
+            config._ppwGrid[k] = 4 * (1.0-x01) + 40*(x01);
         }
     }
 
@@ -46,6 +70,7 @@ int main(int argc, char *argv[])
 
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
     Cqt cqt(&config);
+    Trajectorizer trajectorizer(&config);
 
 
 
@@ -73,6 +98,9 @@ int main(int argc, char *argv[])
 
             cqt.pushSignalBlock(&signalBucket[0]);
             cqt.fillEchoA(&echo[0]);
+
+            trajectorizer.pushSource(&echo[0]);
+            trajectorizer.fillResult(&echo[0]);
 
             for(const real &e : echo)
             {

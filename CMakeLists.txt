@@ -77,6 +77,9 @@ set(SRC
 
     fpr/cqt/level.hpp
     fpr/cqt/level.cpp
+
+    fpr/trajectorizer.hpp
+    fpr/trajectorizer.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

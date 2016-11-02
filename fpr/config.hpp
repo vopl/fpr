@@ -11,5 +11,9 @@ namespace fpr
 
         TVReal      _frequencyGrid;
         TVReal      _ppwGrid;
+
+
+        std::vector<std::vector<real>> _trajectorizerSmoothFilter;//signal buckets x periods
+        std::size_t _trajectorizerFindMaxHeight;//periods
     };
 }
