@@ -2,6 +2,7 @@
 #include "fpr/wavStore.hpp"
 #include "fpr/cqt.hpp"
 #include "fpr/trajectorizer.hpp"
+#include "fpr/grid.hpp"
 
 using namespace fpr;
 
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
     Cqt cqt(&config);
     Trajectorizer trajectorizer(&config);
+    Grid grid(&config);
 
 
 
@@ -85,7 +87,7 @@ int main(int argc, char *argv[])
 
         TVReal echo(config._frequencyGrid.size());
         std::vector<PeculiarPoint> peculiars;
-        std::ofstream echoOut("ea2");
+//        std::ofstream echoOut("ea2");
 
 
         std::size_t framesAmount = wavStore.header()._samplesAmount / config._signalBucketSize;
@@ -108,23 +110,17 @@ int main(int argc, char *argv[])
             if(peculiars.size())
             {
                 trajectorizer.flushPeculiars(&peculiars[0]);
-
-                for(const PeculiarPoint &pp : peculiars)
-                {
-                    if(PeculiarPoint::Type::maxV == pp._type)
-                    {
-                        echo[pp._y-1] = pp._v*2;
-                        echo[pp._y] = pp._v*2;
-                        echo[pp._y+1] = pp._v*2;
-                    }
-                }
+                grid.enplacePeculiars(&peculiars[0], peculiars.size());
             }
 
-            for(const real &e : echo)
-            {
-                echoOut<<e<<", ";
-            }
-            echoOut<<std::endl;
+            grid.enplaceEcho(&echo[0]);
+
+
+//            for(const real &e : echo)
+//            {
+//                echoOut<<e<<", ";
+//            }
+//            echoOut<<std::endl;
         }
 
     }

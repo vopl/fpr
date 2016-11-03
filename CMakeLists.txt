@@ -85,6 +85,9 @@ set(SRC
     fpr/trajectorizer/line.cpp
 
     fpr/peculiarPoint.hpp
+
+    fpr/grid.hpp
+    fpr/grid.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

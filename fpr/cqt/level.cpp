@@ -51,12 +51,11 @@ namespace fpr { namespace cqt
             real v = samples[i];
 
 
-            real dp = x*g_2pi*_frequency;
-            sum += complex(v, 0).rotate(x*g_2pi*_frequency);
+//            real dp = x*g_2pi*_frequency;
+//            sum += complex(v, 0).rotate(x*g_2pi*_frequency);
 
-//            real dp01 = x*_frequency;
-
-//            sum += complex(v*fastCos01(dp01), v*fastSin01(dp01));
+            real dp01 = x*_frequency;
+            sum += complex(v*fastCos01(dp01), v*fastSin01(dp01));
 
             _echoSerie.push_back(sum);
         }
