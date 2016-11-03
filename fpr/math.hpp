@@ -16,6 +16,17 @@ namespace fpr
     static const real g_pi = real(M_PI);
     static const real g_2pi = real(M_PI*2);
 
+    /////////-/////////-/////////-/////////-/////////-/////////-/////////-/////////-
+    inline float fabs(float x) {return std::fabs(x);}
+    inline float sqrt(float x) {return std::sqrt(x);}
+
+    inline float cos(float x) {return std::cos(x);}
+    inline float sin(float x) {return std::sin(x);}
+
+    inline float exp(float x) {return std::exp(x);}
+    inline float log(float x) {return std::log(x);}
+
+    inline float atan2(float x, float y) {return std::atan2(x, y);}
 
     /////////-/////////-/////////-/////////-/////////-/////////-/////////-/////////-
     inline double fabs(double x) {return ::fabs(x);}

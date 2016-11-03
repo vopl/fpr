@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
 
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
-    WavStore wavStore("/work/tmp/wav/in_8.wav");
+    WavStore wavStore("/work/tmp/wav/med_8.wav");
 
     if(!wavStore.good())
     {
@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
     config._signalBucketSize = config._signalFrequency/1000;//fps=1000
 
 
-    std::size_t trajectorizerSmoothFilterWidth = 11;
+    std::size_t trajectorizerSmoothFilterWidth = 21;
     std::size_t trajectorizerSmoothFilterHeight = 3;
-    config._trajectorizerFindMaxHeight = 5;
+    config._trajectorizerFindMaxHeight = 21;
 
     config._trajectorizerSmoothFilter.resize(trajectorizerSmoothFilterWidth);
     for(std::size_t x(0); x<trajectorizerSmoothFilterWidth; ++x)
@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
             config._trajectorizerSmoothFilter[x][y] = hv*vv;
         }
     }
+    config._trajectorizerLineSmoothWidth = 25;
 
 
     {
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
             config._frequencyGrid[k] = /*fpr::exp*/(min + k*step);
 
             real x01 = real(k)/(steps-1);
-            config._ppwGrid[k] = 4 * (1.0-x01) + 40*(x01);
+            config._ppwGrid[k] = 10 * (1.0-x01) + 100*(x01);
         }
     }
 
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
         TVReal signalBucket(config._signalBucketSize);
 
         TVReal echo(config._frequencyGrid.size());
+        std::vector<PeculiarPoint> peculiars;
         std::ofstream echoOut("ea2");
 
 
@@ -101,6 +103,22 @@ int main(int argc, char *argv[])
 
             trajectorizer.pushSource(&echo[0]);
             trajectorizer.fillResult(&echo[0]);
+
+            peculiars.resize(trajectorizer.peculiarsAmount());
+            if(peculiars.size())
+            {
+                trajectorizer.flushPeculiars(&peculiars[0]);
+
+                for(const PeculiarPoint &pp : peculiars)
+                {
+                    if(PeculiarPoint::Type::maxV == pp._type)
+                    {
+                        echo[pp._y-1] = pp._v*2;
+                        echo[pp._y] = pp._v*2;
+                        echo[pp._y+1] = pp._v*2;
+                    }
+                }
+            }
 
             for(const real &e : echo)
             {

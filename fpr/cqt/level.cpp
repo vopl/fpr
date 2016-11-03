@@ -51,12 +51,12 @@ namespace fpr { namespace cqt
             real v = samples[i];
 
 
-            //real dp = x*g_2pi*_frequency;
-            //sum += complex(v, 0).rotate(x*g_2pi*_frequency);
+            real dp = x*g_2pi*_frequency;
+            sum += complex(v, 0).rotate(x*g_2pi*_frequency);
 
-            real dp01 = x*_frequency;
+//            real dp01 = x*_frequency;
 
-            sum += complex(v*fastCos01(dp01), v*fastSin01(dp01));
+//            sum += complex(v*fastCos01(dp01), v*fastSin01(dp01));
 
             _echoSerie.push_back(sum);
         }
@@ -64,19 +64,19 @@ namespace fpr { namespace cqt
 
     complex Level::getEcho()
     {
-        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size());
+        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size()-1);
         return cv;
     }
 
     real Level::getEchoA()
     {
-        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size());
+        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size()-1);
         return cv.a();
     }
 
     real Level::getEchoA2()
     {
-        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size());
+        auto cv = (_echoSerie.back() - _echoSerie.front()) / real(_echoSerie.size()-1);
         return cv.a2();
     }
 

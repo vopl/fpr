@@ -15,5 +15,7 @@ namespace fpr
 
         std::vector<std::vector<real>> _trajectorizerSmoothFilter;//signal buckets x periods
         std::size_t _trajectorizerFindMaxHeight;//periods
+
+        std::size_t _trajectorizerLineSmoothWidth;//signal buckets
     };
 }
