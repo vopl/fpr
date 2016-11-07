@@ -78,16 +78,14 @@ set(SRC
     fpr/cqt/level.hpp
     fpr/cqt/level.cpp
 
-    fpr/trajectorizer.hpp
-    fpr/trajectorizer.cpp
+    fpr/timeGrid.hpp
+    fpr/timeGrid.cpp
 
-    fpr/trajectorizer/line.hpp
-    fpr/trajectorizer/line.cpp
+    fpr/valueGrid.hpp
+    fpr/valueGrid.cpp
 
-    fpr/peculiarPoint.hpp
-
-    fpr/grid.hpp
-    fpr/grid.cpp
+    fpr/resultMaker.hpp
+    fpr/resultMaker.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

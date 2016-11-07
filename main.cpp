@@ -1,8 +1,9 @@
 #include <iostream>
 #include "fpr/wavStore.hpp"
 #include "fpr/cqt.hpp"
-#include "fpr/trajectorizer.hpp"
-#include "fpr/grid.hpp"
+#include "fpr/timeGrid.hpp"
+#include "fpr/valueGrid.hpp"
+#include "fpr/resultMaker.hpp"
 
 using namespace fpr;
 
@@ -24,56 +25,34 @@ int main(int argc, char *argv[])
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
     Config config;
     config._signalFrequency = wavStore.header()._frequency;
-    config._signalBucketSize = config._signalFrequency/1000;//fps=1000
-
-
-    std::size_t trajectorizerSmoothFilterWidth = 21;
-    std::size_t trajectorizerSmoothFilterHeight = 3;
-    config._trajectorizerFindMaxHeight = 21;
-
-    config._trajectorizerSmoothFilter.resize(trajectorizerSmoothFilterWidth);
-    for(std::size_t x(0); x<trajectorizerSmoothFilterWidth; ++x)
-    {
-        real hsigma = real(trajectorizerSmoothFilterWidth)/4;
-        real hmu = trajectorizerSmoothFilterWidth/2;
-        real hv = fpr::exp(-(x-hmu)*(x-hmu)/2/hsigma/hsigma) / hsigma / fpr::sqrt(g_2pi);
-
-        config._trajectorizerSmoothFilter[x].resize(trajectorizerSmoothFilterHeight);
-        for(std::size_t y(0); y<trajectorizerSmoothFilterHeight; ++y)
-        {
-            real vsigma = real(trajectorizerSmoothFilterHeight)/4;
-            real vmu = trajectorizerSmoothFilterHeight/2;
-            real vv = fpr::exp(-(y-vmu)*(y-vmu)/2/vsigma/vsigma) / vsigma / fpr::sqrt(g_2pi);
-
-            config._trajectorizerSmoothFilter[x][y] = hv*vv;
-        }
-    }
-    config._trajectorizerLineSmoothWidth = 25;
+    config._signalBucketSize = 1;//config._signalFrequency/8000;//1000 frames per second
 
 
     {
-        std::size_t steps = 400;
-        config._frequencyGrid.resize(steps);
-        config._ppwGrid.resize(steps);
+        std::size_t steps = config._valueGridSize*5;
+        config._cqtFrequencyGrid.resize(steps);
+        config._cqtPpwGrid.resize(steps);
         real min = /*fpr::log*/(100.0);
         real max = /*fpr::log*/(3000.0);
         real step = (max - min) / (steps - 1);
 
         for(std::size_t k(0); k<steps; k++)
         {
-            config._frequencyGrid[k] = /*fpr::exp*/(min + k*step);
+            config._cqtFrequencyGrid[k] = /*fpr::exp*/(min + k*step);
 
             real x01 = real(k)/(steps-1);
-            config._ppwGrid[k] = 10 * (1.0-x01) + 100*(x01);
+            config._cqtPpwGrid[k] = 10 * (1.0-x01) + 100*(x01);
         }
     }
 
+    config._trajectorizerFindMaxHeight = config._cqtFrequencyGrid.size()/16;
 
 
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
     Cqt cqt(&config);
-    Trajectorizer trajectorizer(&config);
-    Grid grid(&config);
+    TimeGrid timeGrid(&config);
+    ValueGrid valueGrid(&config);
+    ResultMaker resultMaker(&config);
 
 
 
@@ -85,16 +64,15 @@ int main(int argc, char *argv[])
     {
         TVReal signalBucket(config._signalBucketSize);
 
-        TVReal echo(config._frequencyGrid.size());
-        std::vector<PeculiarPoint> peculiars;
-//        std::ofstream echoOut("ea2");
+        TVReal echo(config._cqtFrequencyGrid.size());
+        TVReal values(config._valueGridSize);
 
 
         std::size_t framesAmount = wavStore.header()._samplesAmount / config._signalBucketSize;
 
         for(std::size_t frame(0); frame<framesAmount; ++frame)
         {
-            std::cerr<<frame<<std::endl;
+            //std::cerr<<frame<<std::endl;
             if(!wavStore.read(&signalBucket[0], signalBucket.size()))
             {
                 break;
@@ -103,24 +81,15 @@ int main(int argc, char *argv[])
             cqt.pushSignalBlock(&signalBucket[0]);
             cqt.fillEchoA(&echo[0]);
 
-            trajectorizer.pushSource(&echo[0]);
-            trajectorizer.fillResult(&echo[0]);
+            valueGrid.enplaceEcho(&echo[0]);
 
-            peculiars.resize(trajectorizer.peculiarsAmount());
-            if(peculiars.size())
+            bool hasPeculiar;
+            timeGrid.enplaceEcho(&echo[0], hasPeculiar);
+            if(hasPeculiar)
             {
-                trajectorizer.flushPeculiars(&peculiars[0]);
-                grid.enplacePeculiars(&peculiars[0], peculiars.size());
+                valueGrid.flush(timeGrid.lastPeculiarPosition(), &values[0]);
+                resultMaker.push(timeGrid.lastPeculiarPosition(), &values[0]);
             }
-
-            grid.enplaceEcho(&echo[0]);
-
-
-//            for(const real &e : echo)
-//            {
-//                echoOut<<e<<", ";
-//            }
-//            echoOut<<std::endl;
         }
 
     }

@@ -6,13 +6,13 @@ namespace fpr
     Cqt::Cqt(const Config *config)
         : _config(config)
     {
-        _levels.reserve(_config->_frequencyGrid.size());
-        for(std::size_t i(0); i<_config->_frequencyGrid.size(); ++i)
+        _levels.reserve(_config->_cqtFrequencyGrid.size());
+        for(std::size_t i(0); i<_config->_cqtFrequencyGrid.size(); ++i)
         {
             _levels.emplace_back(new cqt::Level{
                                      _config,
-                                     _config->_frequencyGrid[i],
-                                     _config->_ppwGrid[i]});
+                                     _config->_cqtFrequencyGrid[i],
+                                     _config->_cqtPpwGrid[i]});
         }
     }
 

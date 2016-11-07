@@ -6,16 +6,30 @@ namespace fpr
 {
     struct Config
     {
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
         std::size_t _signalFrequency;
         std::size_t _signalBucketSize;
 
-        TVReal      _frequencyGrid;
-        TVReal      _ppwGrid;
+
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
+        TVReal      _cqtFrequencyGrid;
+        TVReal      _cqtPpwGrid;
 
 
-        std::vector<std::vector<real>> _trajectorizerSmoothFilter;//signal buckets x periods
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
         std::size_t _trajectorizerFindMaxHeight;//periods
 
-        std::size_t _trajectorizerLineSmoothWidth;//signal buckets
+
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
+        real _timeGridSmoothRange = 50;//ms
+        real _timeGridMinStep = 100;//ms
+
+
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
+        std::size_t _valueGridSize = 32;//штук
+        real _valueGridSmoothWidth = 50;//ms
+
+        std::size_t _valuesBits = 1;
+
     };
 }
