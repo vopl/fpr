@@ -4,8 +4,9 @@ DROP TABLE IF EXISTS track CASCADE;
 CREATE TABLE track
 (
 	id bigserial PRIMARY KEY,
-	name varchar
+	name varchar NOT NULL UNIQUE
 );
+CREATE INDEX ON track(name);
 
 ------------------------------------------------------------
 DROP TABLE IF EXISTS fingerprint CASCADE;
@@ -13,10 +14,11 @@ CREATE TABLE fingerprint
 (
 	id bigserial PRIMARY KEY,
 	track_id bigint REFERENCES track(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	pos int,
+	pos float4,
 	val int8
 );
 
+CREATE INDEX ON fingerprint(track_id);
 CREATE INDEX ON fingerprint(pos);
 CREATE INDEX ON fingerprint(val);
 

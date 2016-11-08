@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
              ("in-file", po::value<std::string>()->default_value("in.wav"), "input wav file name")
 
-             ("fps", po::value<real>()->default_value(real(8000)), "frames per second analyze")
+             ("fps", po::value<real>()->default_value(real(500)), "frames per second analyze")
 
 
              ("freq-min", po::value<real>()->default_value(real(100)), "minimum frequency, Hz")
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
              ("value-grid-size", po::value<std::size_t>()->default_value(64), "result dimension")
              ("value-smooth-range", po::value<real>()->default_value(real(50)), "time range for smooth value, ms")
-             ("value-bits", po::value<std::size_t>()->default_value(1), "value bitness")
+             ("value-bits", po::value<std::size_t>()->default_value(1), "value element bitness")
 
              ("result-format", po::value<std::string>()->default_value("time_value"), "time_value, time_valueElements")
 

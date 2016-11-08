@@ -26,7 +26,7 @@ namespace fpr
         {
         case ResultFormat::time_value:
             {
-                std::uint64_t res(0);
+                std::int64_t res(0);
                 for(std::size_t i(0); i<_config->_valueGridSize; ++i)
                 {
                     assert(values[i] >= 0 && values[i]<=1);
