@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base=./../voxforge/work/8k
+base=./../voxforge/work/testset
 fpr_args=
 psql_args="-d test -h 127.0.0.1 -p 5432 -U postgres -q "
 
