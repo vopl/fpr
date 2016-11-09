@@ -1,10 +1,10 @@
-#include "fpr/resultMaker.hpp"
+#include "resultMaker.hpp"
 #include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iostream>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     ResultMaker::ResultMaker(const Config *config, ResultFormat format)
         : _config(config)
@@ -57,4 +57,4 @@ namespace fpr
 
         std::cout<<std::endl;
     }
-}
+}}

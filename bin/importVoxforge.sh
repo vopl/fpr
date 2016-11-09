@@ -41,7 +41,7 @@ for src in ${srcs2[@]}; do
 
 
     vals=
-    for line in $(./fpr ${fpr_args} --in-file=$src | tr ":" "," | tr -d " "); do
+    for line in $(./aid-fpr-cli ${fpr_args} --in-file=$src | tr ":" "," | tr -d " "); do
         vals="$vals,($line)"
         #echo $line
     done

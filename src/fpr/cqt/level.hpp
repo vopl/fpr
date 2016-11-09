@@ -1,9 +1,9 @@
 #pragma once
 
-#include "fpr/config.hpp"
+#include "config.hpp"
 #include <boost/circular_buffer.hpp>
 
-namespace fpr { namespace cqt
+namespace aid { namespace fpr { namespace cqt
 {
     class Level
     {
@@ -23,4 +23,4 @@ namespace fpr { namespace cqt
         boost::circular_buffer<complex> _echoSerie;
     };
 
-}}
+}}}

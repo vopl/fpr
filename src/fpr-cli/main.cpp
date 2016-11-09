@@ -1,5 +1,5 @@
 #include <iostream>
-#include "fpr/wavStore.hpp"
+#include "utils/wavStore.hpp"
 #include "fpr/cqt.hpp"
 #include "fpr/timeGrid.hpp"
 #include "fpr/valueGrid.hpp"
@@ -7,7 +7,9 @@
 
 #include <boost/program_options.hpp>
 
-using namespace fpr;
+using namespace aid;
+using namespace aid::fpr;
+using namespace aid::utils;
 namespace po = boost::program_options;
 
 int main(int argc, char *argv[])
@@ -81,7 +83,7 @@ int main(int argc, char *argv[])
  #define STR(x) STR2(x)
  #define STR2(x) #x
          std::cout << "git: "<<STR(GIT_COMMIT) << std::endl;
-         std::cout << "float bitness: "<<sizeof(real) << std::endl;
+         std::cout << "float bitness: "<<sizeof(real)*CHAR_BIT << std::endl;
          std::cout << desc << std::endl;
          return EXIT_SUCCESS;
      }

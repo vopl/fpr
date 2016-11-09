@@ -1,10 +1,10 @@
 #pragma once
 
-#include "fpr/config.hpp"
+#include "config.hpp"
 #include <boost/circular_buffer.hpp>
 #include <memory>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     class ValueGrid
     {
@@ -29,4 +29,4 @@ namespace fpr
 
 
     };
-}
+}}

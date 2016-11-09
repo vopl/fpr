@@ -1,8 +1,8 @@
-#include "fpr/timeGrid.hpp"
+#include "timeGrid.hpp"
 #include <iostream>
 #include <fstream>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     TimeGrid::TimeGrid(const Config *config)
         : _config(config)
@@ -90,4 +90,4 @@ namespace fpr
         return _lastPeculiarPosition;
     }
 
-}
+}}

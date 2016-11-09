@@ -1,10 +1,10 @@
 #pragma once
 
-#include "fpr/config.hpp"
-#include "fpr/math.hpp"
+#include "config.hpp"
+#include "math.hpp"
 #include <memory>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     namespace cqt
     {
@@ -28,4 +28,4 @@ namespace fpr
         std::vector<std::unique_ptr<cqt::Level>> _levels;
         std::size_t _signalBucketsPushed = 0;
     };
-}
+}}

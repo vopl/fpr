@@ -1,8 +1,8 @@
-#include "fpr/valueGrid.hpp"
+#include "valueGrid.hpp"
 #include <algorithm>
 #include <iostream>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     ValueGrid::ValueGrid(const Config *config)
         : _config(config)
@@ -121,4 +121,4 @@ namespace fpr
         return _echo[pos % _echo.size()].get();
     }
 
-}
+}}

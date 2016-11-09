@@ -1,8 +1,8 @@
 #pragma once
 
-#include "fpr/config.hpp"
+#include "config.hpp"
 
-namespace fpr
+namespace aid { namespace fpr
 {
     enum class ResultFormat
     {
@@ -23,4 +23,4 @@ namespace fpr
         ResultFormat _format;
 
     };
-}
+}}

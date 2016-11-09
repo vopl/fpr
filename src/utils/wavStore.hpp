@@ -1,9 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <fstream>
-#include "fpr/math.hpp"
+#include "math.hpp"
 
-namespace fpr
+namespace aid { namespace utils
 {
     class WavStore
     {
@@ -46,4 +46,4 @@ namespace fpr
         bool _good = false;
     };
 
-}
+}}

@@ -4,7 +4,7 @@
 #include <limits>
 #include <vector>
 
-namespace fpr
+namespace aid
 {
     using real = float;
     //using real = double;
@@ -55,9 +55,9 @@ namespace fpr
 
 }
 
-#include "fpr/complex.hpp"
+#include "complex.hpp"
 
-namespace fpr
+namespace aid
 {
     using complex = complex_tmpl<real>;
     //////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,5 @@
 
 *.user
 bin/*
+lib/*
 voxforge/work/**

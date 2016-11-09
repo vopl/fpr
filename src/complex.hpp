@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cassert>
 
-namespace fpr
+namespace aid
 {
     enum EComplexConstructType
     {

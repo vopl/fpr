@@ -1,9 +1,9 @@
 #pragma once
 
-#include "fpr/config.hpp"
+#include "config.hpp"
 #include <boost/circular_buffer.hpp>
 
-namespace fpr
+namespace aid { namespace fpr
 {
     class TimeGrid
     {
@@ -31,4 +31,4 @@ namespace fpr
 
     };
 
-}
+}}

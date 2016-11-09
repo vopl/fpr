@@ -1,7 +1,7 @@
-#include "fpr/cqt.hpp"
-#include "fpr/cqt/level.hpp"
+#include "cqt.hpp"
+#include "cqt/level.hpp"
 
-namespace fpr
+namespace aid { namespace fpr
 {
     Cqt::Cqt(const Config *config)
         : _config(config)
@@ -58,4 +58,4 @@ namespace fpr
         }
     }
 
-}
+}}

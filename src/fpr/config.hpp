@@ -1,8 +1,8 @@
 #pragma once
 
-#include "fpr/math.hpp"
+#include "math.hpp"
 
-namespace fpr
+namespace aid { namespace fpr
 {
     struct Config
     {
@@ -32,4 +32,4 @@ namespace fpr
         std::size_t _valuesBits = 1;
 
     };
-}
+}}

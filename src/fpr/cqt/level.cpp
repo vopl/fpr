@@ -1,6 +1,6 @@
-#include "fpr/cqt/level.hpp"
+#include "cqt/level.hpp"
 
-namespace fpr { namespace cqt
+namespace aid { namespace fpr { namespace cqt
 {
     Level::Level(const Config *config, real frequency, real ppw)
         : _config(config)
@@ -80,4 +80,4 @@ namespace fpr { namespace cqt
     }
 
 
-}}
+}}}

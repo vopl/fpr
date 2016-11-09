@@ -1,8 +1,8 @@
-#include "fpr/wavStore.hpp"
+#include "wavStore.hpp"
 #include <iostream>
 #include <cstring>
 
-namespace fpr
+namespace aid { namespace utils
 {
     namespace
     {
@@ -220,4 +220,4 @@ namespace fpr
     {
         assert(0);
     }
-}
+}}
