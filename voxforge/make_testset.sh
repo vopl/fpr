@@ -33,11 +33,11 @@ function mkOneFreq
     done
 }
 
-mkOneFreq 6000
+#mkOneFreq 6000
 mkOneFreq 8000
-mkOneFreq 11025
-mkOneFreq 16000
-mkOneFreq 22050
+#mkOneFreq 11025
+#mkOneFreq 16000
+#mkOneFreq 22050
 
 
 exit 0;
