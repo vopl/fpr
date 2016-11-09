@@ -68,6 +68,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 
+### Configure CMake to use our extra Find modules ###
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
+
 add_subdirectory(src/fpr)
 add_subdirectory(src/fpr-cli)
+add_subdirectory(src/mapping)
+add_subdirectory(src/mapping-cli)
 add_subdirectory(src/utils)
