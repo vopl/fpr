@@ -81,7 +81,12 @@ int main(int argc, char *argv[])
      solver.pushFingerprintValue(6.624, 154046261330803530);
      solver.pushFingerprintValue(6.804, 144713675336919872);
 
-     //solver.pushFingerprintValue()
+     solver.update();
+
+     for(const Peer &p : solver.getPeers())
+     {
+         std::cout<<"["<<p._timeStart<<", "<<p._timeStop<<"], "<<p._similarity<<", "<<p._trackId<<", "<<p._trackName<<std::endl;
+     }
 
     return 0;
 }

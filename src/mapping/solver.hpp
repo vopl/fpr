@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <deque>
 #include <soci.h>
+#include <cmath>
 
 namespace aid { namespace mapping
 {
@@ -35,12 +36,25 @@ namespace aid { namespace mapping
         {
             double _pos;
             std::uint64_t _value;
+
+            bool operator==(const FpValue &with) const
+            {
+                return std::abs(_pos - with._pos)<std::numeric_limits<double>::epsilon()*100 &&
+                        _value == with._value;
+            }
         };
 
         struct PeerFpValue
                 : FpValue
         {
             std::uint64_t _trackId;
+
+            bool operator==(const PeerFpValue &with) const
+            {
+                return _trackId == with._trackId &&
+                        static_cast<const FpValue&>(*this) == static_cast<const FpValue&>(with);
+            }
+
         };
 
 
@@ -52,12 +66,31 @@ namespace aid { namespace mapping
             std::vector<PeerFpValue> _initialPeerFpValues;
 
             //candidate in point
+            std::vector<PeerFpValue> _allPeerFpValues;
         };
 
         std::deque<Point> _points;
 
         //candidates
+        struct CandidateRange
+        {
+            std::size_t _trackId = 0;
+            double _start = 0;
+            double _stop = 0;
 
+            std::vector<FpValue> _fpValues;
+        };
+
+        const double _lookupCandidateTime = 100;//sec
+
+        std::map<std::size_t, CandidateRange> _candidateRanges; //trackId -> candidateRange
+
+        /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
+        std::vector<Peer> _peers;
+
+
+    private:
+        bool match(const FpValue &src, const FpValue &peer);
 
     };
 
