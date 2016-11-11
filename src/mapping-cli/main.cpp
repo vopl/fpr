@@ -85,7 +85,10 @@ int main(int argc, char *argv[])
 
      for(const Peer &p : solver.getPeers())
      {
-         std::cout<<"["<<p._timeStart<<", "<<p._timeStop<<"], "<<p._similarity<<", "<<p._trackId<<", "<<p._trackName<<std::endl;
+         std::cout
+                <<"["<<p._timeStart<<", "<<p._timeStop<<"] -> "
+                <<"["<<p._peerTimeStart<<", "<<p._peerTimeStop<<"], "
+                <<p._similarity<<", "<<p._trackId<<", "<<p._trackName<<std::endl;
      }
 
     return 0;

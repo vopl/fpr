@@ -13,6 +13,8 @@ namespace aid { namespace mapping
         double _timeStart;
         double _timeStop;
 
+        double _peerTimeStart;
+        double _peerTimeStop;
 
         double _similarity;
     };

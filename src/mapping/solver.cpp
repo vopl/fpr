@@ -301,8 +301,13 @@ namespace aid { namespace mapping
                     peerValueDistances.push_back(popcnt(_points[i]._fpValue._value ^ initiator._value));
 
                     peer._trackId = initiator._trackId;
+
                     peer._timeStart = _points[i]._fpValue._pos;
                     peer._timeStop = peer._timeStart;
+
+                    peer._peerTimeStart = initiator._pos;
+                    peer._peerTimeStop = peer._peerTimeStart;
+
                     peer._similarity = 0;
 
 
@@ -340,6 +345,7 @@ namespace aid { namespace mapping
                             peerValueDistances.push_back(popcnt(p._fpValue._value ^ next._value));
 
                             peer._timeStop = p._fpValue._pos;
+                            peer._peerTimeStop = next._pos;
 
                             p._allPeerFpValues.erase(p._allPeerFpValues.begin() + minPeerIndex);
                             continue;
