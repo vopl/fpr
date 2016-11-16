@@ -1,5 +1,10 @@
 
 *.user
+
 bin/*
 lib/*
-voxforge/work/**
+txt/*
+
+data/**/work/**
+data/**/work2/**
+data/testset2/**
