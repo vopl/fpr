@@ -17,7 +17,7 @@ function mkOneFreq
         echo "$src -> $dst"
 
         mkdir -p `dirname "$dst"`
-        sox --norm=-1 $src $dst rate $freq silence 1 0.5 0.1% -1 0.5 0.1% remix -
+        sox --norm=-1 $src $dst rate $freq silence 1 0.5 0.1% -1 0.5 0.1% remix - pad 0.5 0.5
         
         #exit 1;
         

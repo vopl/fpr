@@ -77,3 +77,5 @@ add_subdirectory(src/fpr-cli)
 add_subdirectory(src/mapping)
 add_subdirectory(src/mapping-cli)
 add_subdirectory(src/utils)
+
+add_subdirectory(src/classifier)
