@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <complex>
 #include <cassert>
+#include <limits>
+#include <algorithm>
 
 #include <memory>
 #include <vector>

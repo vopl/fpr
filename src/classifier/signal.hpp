@@ -11,7 +11,7 @@ namespace tst
 
         void setup(real frequency, std::size_t keepHistorySamples);
 
-        void stepTo(real t);
+        void stepTo(real time);
 
         void pushHarmonicSegment(
                 real t0, real t1,

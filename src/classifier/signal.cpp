@@ -20,7 +20,7 @@ namespace tst
     }
 
 
-    void Signal::stepTo(real t)
+    void Signal::stepTo(real time)
     {
         assert(0);
     }

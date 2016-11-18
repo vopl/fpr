@@ -1,4 +1,6 @@
 #include "spectra.hpp"
+#define cimg_display 0
+#include <CImg.h>
 
 namespace tst
 {
@@ -88,7 +90,44 @@ namespace tst
 
     void Spectra::draw(const char *fname)
     {
-        assert(0);
+        using namespace cimg_library;
+        cimg::exception_mode(1);
+
+        std::size_t width = _levels[0]->dataSize();
+        std::size_t height = _levels.size();
+
+        CImg<unsigned char> visu(width, height);
+        visu = real(0);
+
+        real max = 0;
+        for(std::size_t y(0); y < height; ++y)
+        {
+            for(std::size_t x(0); x < width; ++x)
+            {
+                max = std::max(_levels[y]->data(x), max);
+            }
+        }
+
+        if(max>0)
+        {
+            for(std::size_t y(0); y < height; ++y)
+            {
+                for(std::size_t x(0); x < width; ++x)
+                {
+                    real v = _levels[y]->data(x) / max * 255;
+
+                    if(v > 0)
+                    {
+                        visu(x, height-1-y) = v;
+                    }
+                }
+            }
+        }
+
+        visu.save(fname);
+
+
+        //assert(0);
     }
 
 

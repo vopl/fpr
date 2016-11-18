@@ -14,10 +14,12 @@ namespace tst { namespace spectra
 
         void stepTo(real time);
 
-        void pushHarmonicSegment(
-                real t0, real t1,
+        void pushHarmonicSegment(real t0, real t1,
                 real f0, real f1,
                 real a0, real a1);
+
+        std::size_t dataSize();
+        real &data(std::size_t index);
 
     private:
         real &target(std::size_t pos);
@@ -35,6 +37,7 @@ namespace tst { namespace spectra
     private:
         real _time;
         std::vector<real> _targetBuffer;
+        std::size_t _targetBufferSize;
         std::size_t _targetBufferEnd;
 
     };

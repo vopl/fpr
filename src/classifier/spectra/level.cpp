@@ -15,7 +15,8 @@ namespace tst { namespace spectra
         , _samplesPerPeriod(samplesPerPeriod)
         , _time(0)
     {
-        _targetBuffer.resize(std::size_t(_samplesPerPeriod * _periodsInTarget + 0.5));
+        _targetBufferSize = std::size_t(_samplesPerPeriod * (_periodsInTarget + _periodsBefore) + 0.5);
+        _targetBuffer.resize(_targetBufferSize);
         _targetBufferEnd = 0;
     }
 
@@ -26,13 +27,7 @@ namespace tst { namespace spectra
 
     void Level::stepTo(real time)
     {
-        real newTargetBufferEndTime = time - _periodsBefore/_frequency;
-        if(newTargetBufferEndTime <= 0)
-        {
-            return;
-        }
-
-        std::size_t newTargetBufferEnd = std::size_t(newTargetBufferEndTime*_frequency*_samplesPerPeriod);
+        std::size_t newTargetBufferEnd = std::size_t(time*_frequency*_samplesPerPeriod+1.0);
         assert(newTargetBufferEnd >= _targetBufferEnd);
 
 //        std::size_t dist = newTargetBufferEnd - _targetBufferEnd;
@@ -41,7 +36,7 @@ namespace tst { namespace spectra
         //rotate target
         while(newTargetBufferEnd > _targetBufferEnd)
         {
-            target(_targetBufferEnd) = real();
+            target(_targetBufferEnd) = 0;//(_targetBufferEnd % _samplesPerPeriod);
             _targetBufferEnd++;
         }
 
@@ -53,103 +48,119 @@ namespace tst { namespace spectra
             real f0, real f1,
             real a0, real a1)
     {
-        //нормировка времени и частоты на единицы данного уровня
-        real tNorma = _samplesPerPeriod/_frequency;
-        real fNorma = _frequencyHeight;
-
         //время отступить на начало целевого сегмента
-        t0 -= (_periodsBefore+_periodsInTarget)/_frequency;
-        t1 -= (_periodsBefore+_periodsInTarget)/_frequency;
+        real targetBufferStartTime = (real(_targetBufferEnd+0)-_targetBufferSize)/_samplesPerPeriod/_frequency;
+        t0 -= targetBufferStartTime;
+        t1 -= targetBufferStartTime;
+
+        //частоту отступить на начало собственный центр
+        f0 -= _frequency;
+        f1 -= _frequency;
+
+        //нормировка времени и частоты на единицы данного уровня
+        real tNorma = 1.0/_frequency/_samplesPerPeriod;
+        real fNorma = _frequencyHeight;
 
         t0 /= tNorma;
         t1 /= tNorma;
 
-        f0 -= _frequency;
-        f1 -= _frequency;
-
         f0 /= fNorma;
         f1 /= fNorma;
 
+
+        //прямая f = fK * t + fB
+        real fK = (f1-f0) / (t1-t0);
+        real fB = f0 - fK*t0;
+
+        //найти пересечение частоты с нулем, пригодится
+        real tfZero = -std::numeric_limits<real>::max();
+        real tfM1 = -std::numeric_limits<real>::max();
+        real tfP1 = -std::numeric_limits<real>::max();
+        if(fK>0)
+        {
+            tfZero = (real(0)-fB)/fK;
+            tfM1 = (real(-1)-fB)/fK;
+            tfP1 = (real(1)-fB)/fK;
+        }
+
+
+        //прямая a = aK * t + aB
+        real aK = (a1-a0) / (t1-t0);
+        real aB = a0 - aK*t0;
+
         std::size_t idx0 = std::size_t(std::max(real(0), t0));
-        std::size_t idx1 = std::size_t(std::max(real(0), t1)) + 1;
+        std::size_t idx1 = std::size_t(std::min(real(_targetBufferSize), t1+1));
 
         for(std::size_t idx(idx0); idx<idx1; ++idx)
         {
-            real tCenter = real(idx)+real(0.5);
-            real fCenter = real(0.5);
+            //локального отрезка - время
+            real lt0 = std::max(t0, real(idx));
+            real lt1 = std::min(t1, real(idx+1));
 
-            real tl0 = t0 - tCenter;
-            real tl1 = t1 - tCenter;
+            auto integrate = [&](real lt0, real lt1) -> real{
 
-            real fl0 = f0 - fCenter;
-            real fl1 = f1 - fCenter;
+                real fMid = fK*(lt0+lt1)/2 + fB;
 
-            real al0 = a0;
-            real al1 = a1;
+                if(fMid < -1.0 || fMid > 1.0)
+                {
+                    return 0;
+                }
 
-            //прямая A * t + B * f + C = 0
-            real fA = +real(1.0)/(tl1-tl0);
-            real fB = -real(1.0)/(fl1-fl0);
-            real fC = -(tl0)/(tl1-tl0) + (fl0)/(fl1-fl0);
+                auto itrMinus = [&](real t){
+                    return
+                            +(-aK*fK) * t*t*t/3
+                            +(aK-aK*fB-fK*aB) * t*t/2
+                            +(aB-fB*aB) * t;
+                };
 
-            //пересечь прямую сcomplex единичной окружностью
-            real a = fB*fB + fA*fA;
-            real b = 2*fA*fC;
-            real c = fC*fC - 1.0;
+                auto itrPlus = [&](real t){
+                    return
+                            +(+aK*fK) * t*t*t/3
+                            +(aK+aK*fB+fK*aB) * t*t/2
+                            +(aB+fB*aB) * t;
+                };
 
-            real d = b*b - 4*a*c;
+                if(fMid < 0)
+                {
+                    real res = itrPlus(lt1) - itrPlus(lt0);
+                    return res;
+                }
 
-            if(d <= 0)
+                real res = itrMinus(lt1) - itrMinus(lt0);
+                return res;
+            };
+
+            real times[5] = {tfM1,tfZero,tfP1, lt0, lt1};
+            std::sort(times, times+5);
+
+            real ai = 0;
+            for(std::size_t i(0); i<4; ++i)
             {
-                //нет пересечений
-                continue;
+                if(times[i] >= lt0 && times[i+1]<=lt1)
+                {
+                    ai += integrate(times[i], times[i+1]);
+                }
             }
 
-            //точки пересечения с окружностью
-            real tc0 = (-b - sqrt(d))/2/a;
-            real tc1 = (-b + sqrt(d))/2/a;
-
-            real fc0 = - (fA*tc0 + fC) / fB;
-            real fc1 = - (fA*tc1 + fC) / fB;
-
-            //прямая A * t + B * a + C = 0
-            real aA = +real(1.0)/(tl1-tl0);
-            real aB = -real(1.0)/(al1-al0);
-            real aC = -(tl0)/(tl1-tl0) + (al0)/(al1-al0);
-
-            //теперь ограничить оригинальный отрезок
-            if(tl0 < tc0)
-            {
-                fl0 = fc0;
-                al0 = - (aA*tc0 + aC) / aB;
-                tl0 = tc0;
-            }
-
-            if(tl1 > tc1)
-            {
-                fl1 = fc1;
-                al1 = - (aA*tc1 + aC) / aB;
-                tl1 = tc1;
-            }
-
-            if(tl0 >= tl1)
-            {
-                //отрезок получился наизнанку
-                continue;
-            }
-
-            //интеграл амплитуды по времени, от tl0 до tl1
-            real ai = (-aA/aB*tl1*tl1/2 + tl1) - (-aA/aB*tl0*tl0/2 + tl0);
-
-            //и поделить его на диаметр (если прямая проходит ровно через центр) - это и есть вклад
-            target(_targetBufferEnd-_targetBuffer.size() + idx) += ai / 2;
+            data(idx) += ai;
         }
 
     }
 
+    std::size_t Level::dataSize()
+    {
+        //return std::size_t(_samplesPerPeriod * (_periodsInTarget) + 0.5);
+        return _targetBufferSize;
+    }
+
+    real &Level::data(std::size_t index)
+    {
+        return target(_targetBufferEnd + index);
+    }
+
     real &Level::target(std::size_t pos)
     {
-        return _targetBuffer[pos % _targetBuffer.size()];
+        return _targetBuffer[pos % _targetBufferSize];
     }
 
 
