@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         amplitudeLaw._valueChangeGenerator = new RandomGeneratorUniform(src, 0, 0.5);
 
 
-        for(std::size_t i(0); i<10; ++i)
+        for(std::size_t i(0); i<1; ++i)
         {
             harmonicGenerators.push_back(new HarmonicGenerator);
             harmonicGenerators.back()->setup(frequencyLaw, amplitudeLaw);

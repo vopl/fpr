@@ -84,7 +84,10 @@ namespace tst
 
     void HarmonicGenerator::flush(Signal &signal)
     {
-        assert(0);
+        signal.pushHarmonicSegment(
+                    _prevTime, _time,
+                    f(_prevTime), f(_time),
+                    a(_prevTime), a(_time));
     }
 
 

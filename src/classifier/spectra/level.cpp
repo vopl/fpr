@@ -149,8 +149,8 @@ namespace tst { namespace spectra
 
     std::size_t Level::dataSize()
     {
-        //return std::size_t(_samplesPerPeriod * (_periodsInTarget) + 0.5);
-        return _targetBufferSize;
+        return std::size_t(_samplesPerPeriod * (_periodsInTarget) + 0.5);
+        //return _targetBufferSize;
     }
 
     real &Level::data(std::size_t index)
