@@ -87,6 +87,10 @@ namespace tst
         //assert(0);
     }
 
+    real &Spectra::data(std::size_t levelIdx, std::size_t sampleIdx)
+    {
+        return _levels[levelIdx]->data(sampleIdx);
+    }
 
     void Spectra::draw(const char *fname)
     {

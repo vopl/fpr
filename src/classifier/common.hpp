@@ -18,7 +18,7 @@
 
 namespace tst
 {
-    using real = double;
+    using real = float;
     using complex = std::complex<real>;
 
 }

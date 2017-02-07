@@ -25,6 +25,8 @@ namespace tst
                 real f0, real f1,
                 real a0, real a1);
 
+        real &data(std::size_t levelIdx, std::size_t sampleIdx);
+
         void draw(const char *fname);// periodsInTarget*samplesPerPeriod x fSteps
 
     private:
